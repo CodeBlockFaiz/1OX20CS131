@@ -1,0 +1,136 @@
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
+import {
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  Typography,
+} from '@mui/material';
+import '@mui/material/styles'; 
+
+function TrainSchedule() {
+  const [trains, setTrains] = useState([]);
+
+  useEffect(() => {
+    const simulatedData = [
+      {
+        id: 1,
+        name: 'Express Train 1',
+        priceSleeper: 100,
+        priceAC: 200,
+        availableSeats: 50,
+        departureTime: '09:00 AM',
+      },
+      {
+        id: 2,
+        name: 'Superfast Train 2',
+        priceSleeper: 120,
+        priceAC: 250,
+        availableSeats: 30,
+        departureTime: '10:30 AM',
+      },
+    ];
+
+    const sortedTrains = simulatedData.sort((a, b) => {
+      const priceA = a.priceSleeper + a.priceAC;
+      const priceB = b.priceSleeper + b.priceAC;
+      return priceB - priceA || a.availableSeats - b.availableSeats; // Correct sorting order
+    });
+
+    setTrains(sortedTrains);
+  }, []);
+
+  return (
+    <div>
+      <Typography variant="h4">All Trains</Typography>
+      <Paper>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Train Name</TableCell>
+              <TableCell>Price (Sleeper)</TableCell>
+              <TableCell>Price (AC)</TableCell>
+              <TableCell>Available Seats</TableCell>
+              <TableCell>Departure Time</TableCell>
+              <TableCell>Details</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {trains.map((train) => (
+              <TableRow key={train.id}>
+                <TableCell>{train.name}</TableCell>
+                <TableCell>{train.priceSleeper}</TableCell>
+                <TableCell>{train.priceAC}</TableCell>
+                <TableCell>{train.availableSeats}</TableCell>
+                <TableCell>{train.departureTime}</TableCell>
+                <TableCell>
+                  <Link to={`/train/${train.id}`}>Details</Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </Paper>
+    </div>
+  );
+}
+
+function SingleTrain({ match }) {
+  const trainId = match.params.id;
+  const trainDetails = {
+    id: 1,
+    name: 'Express Train 1',
+    priceSleeper: 100,
+    priceAC: 200,
+    availableSeats: 50,
+    departureTime: '09:00 AM',
+  };
+
+  return (
+    <div>
+      <Typography variant="h4">Train Details</Typography>
+      <Paper>
+        <Table>
+          <TableBody>
+            <TableRow>
+              <TableCell>Train Name</TableCell>
+              <TableCell>{trainDetails.name}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Price (Sleeper)</TableCell>
+              <TableCell>{trainDetails.priceSleeper}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Price (AC)</TableCell>
+              <TableCell>{trainDetails.priceAC}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Available Seats</TableCell>
+              <TableCell>{trainDetails.availableSeats}</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>Departure Time</TableCell>
+              <TableCell>{trainDetails.departureTime}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </Paper>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <Switch>
+        <Route path="/" exact component={TrainSchedule} />
+        <Route path="/train/:id" component={SingleTrain} />
+      </Switch>
+    </Router>
+  );
+}
+
+export default App;
